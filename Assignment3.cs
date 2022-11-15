@@ -11,7 +11,6 @@
         public List<string> file;
         public Node leftMostChild;
         public Node rightSibling;
- 
     }
 
     private Node root;
