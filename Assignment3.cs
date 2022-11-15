@@ -1,5 +1,7 @@
 ﻿/*
- * put documentation here eventually
+ * how to open this repository in VS:
+ * -link VS to your github account
+ * -clone this repository in VS
  */
 public class FileSystem
 {
