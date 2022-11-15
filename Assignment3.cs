@@ -1,4 +1,7 @@
-﻿public class FileSystem
+﻿/*
+ * put documentation here eventually
+ */
+public class FileSystem
 {
     private class Node
     {
