@@ -56,6 +56,17 @@ public class FileSystem
     // Returns false if the file is not found at that address or the path is undefined; true otherwise
     public bool RemoveFile(string address) 
     {
+        //CHeck proper address given
+
+
+        //navigate to this directory
+
+        //CHeck if their are conflicts
+
+        //if no conflicts remove file
+
+
+
         return false; //placeholder, replace with real code
     }
 
