@@ -38,6 +38,17 @@ public class FileSystem
     // Returns false if the file already exists at that address or the path is undefined; true otherwise
     public bool AddFile(string address) 
     {
+        //CHeck proper address given
+
+        
+        //navigate to this directory
+
+        //CHeck if their are conflicts
+
+        //if no conflicts add file
+        
+        
+        
         return false; //placeholder, replace with real code
     }
 
@@ -71,6 +82,7 @@ public class FileSystem
     // Prints the directories in a pre-order fashion along with their files
     public void PrintFileSystem() {
         Console.WriteLine(this.root.directory);
+
         /*Node traversalNode = this.root;
         while (traversalNode.leftMostChild != null) { 
             
