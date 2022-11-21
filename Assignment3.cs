@@ -3,6 +3,7 @@
  * -link VS to your github account
  * -clone this repository in VS
  */
+
 using System;
 public class FileSystem
 {
@@ -22,15 +23,32 @@ public class FileSystem
     private Node root;
 
     // Creates a file system with a root directory where the name of the root directory is “/”.
-    public FileSystem() 
-    {
-        
+    public FileSystem() {
+        root = new Node
+        {
+            //Initialize values
+            directory = "/",
+            leftMostChild = null,
+            rightSibling = null,
+            file = null
+        };
     }
 
     // Adds a file at the given address
     // Returns false if the file already exists at that address or the path is undefined; true otherwise
     public bool AddFile(string address) 
     {
+        //CHeck proper address given
+
+        
+        //navigate to this directory
+
+        //CHeck if their are conflicts
+
+        //if no conflicts add file
+        
+        
+        
         return false; //placeholder, replace with real code
     }
 
@@ -62,9 +80,13 @@ public class FileSystem
     }
 
     // Prints the directories in a pre-order fashion along with their files
-    public void PrintFileSystem() 
-    { 
-    
+    public void PrintFileSystem() {
+        Console.WriteLine(this.root.directory);
+
+        /*Node traversalNode = this.root;
+        while (traversalNode.leftMostChild != null) { 
+            
+        }*/
     }
 }
 
@@ -72,6 +94,9 @@ public class Demo
 {
     public static void Main()
     {
-       //testing space
+        //testing space
+        FileSystem testFileSystem = new FileSystem();
+
+        testFileSystem.PrintFileSystem();
     }
 }
