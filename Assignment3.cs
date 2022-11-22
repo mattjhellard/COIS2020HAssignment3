@@ -6,6 +6,8 @@
 
 using System;
 using System.IO;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 public class FileSystem
@@ -37,63 +39,98 @@ public class FileSystem
         };
     }
 
+    //Check if the filename contains invalid characters
+    string CheckInvalidCharacters(string stringToCheck, char[] invalidCharacters)
+    {
+        string invalidMsg = " ";
+        char[] invalidFilenameChars = Path.GetInvalidFileNameChars();
+        string filename = Path.GetFileName(stringToCheck);
+
+        foreach (char c in filename)
+        {
+            foreach (char invalidChar in invalidFilenameChars)
+            {
+                if (c == invalidChar)
+                {
+                    //Invalid character detected
+                    invalidMsg = "Invalid characters found: " + invalidChar;
+                    Console.WriteLine(invalidMsg);
+                    break;
+                }
+            }
+            if (invalidMsg != " ")
+            {
+                break;
+            }
+        }
+        return invalidMsg;
+    }
+
     // Adds a file at the given address
     // Returns false if the file already exists at that address or the path is undefined; true otherwise
     public bool AddFile(string address) 
     {
         //Check proper address given
         //Format: "/DirectoryName/DirectoryName/.../Filename"
-        
+
         //Check if the path is null
         if (address != null)
         {
             //Valid
-            Console.WriteLine("valid");
+        }
+        else
+        {
+            //null string
+            Console.WriteLine("String can not be null.");
+            return false;
+        }
+
+        //Check if the path contains invalid characters
+        //below but just the path
+         
+
+
+        //Check if the filename contains invalid characters
+        char[] invalidFilenameChars = Path.GetInvalidFileNameChars();
+
+        //Issue
+        string filename = Path.GetFileName(address);        //Use this as the check try to do this else fail for filename and directory
+        string invalidMsg = CheckInvalidCharacters(filename, invalidFilenameChars);
+
+        if (invalidMsg == " ")
+        {
+            //Valid
+        }
+        else
+        {
+            //No extension
+            Console.WriteLine(invalidMsg);
+            return false;
+        }
+
+        //Check if the path starts at the root (a full path)
+        if (Path.IsPathRooted(address))
+        {
+            //Valid
         }
         else
         {
             //Invalid file path
-            Console.WriteLine("String can not be null.");
-        }
-
-        //Check if the path starts at the root
-        if (Path.IsPathRooted(address))
-        {
-            //Valid
-            Console.WriteLine("valid");
-        }
-        else {
-            //Invalid file path
             Console.WriteLine("Please enter a valid file path in the form: /Directory/.../Filename");
+            return false;
         }
 
         //Check if the path has a valid extension eg .txt
         if (Path.HasExtension(address))
         {
             //Valid
-            Console.WriteLine("valid2");
         }
         else
         {
             //No extension
             Console.WriteLine("Please add a file extension. Example: .txt or .exe");
+            return false;
         }
-
-        //Check if the path contains invalid characters
-        if (1 == 2)
-        {
-            //Valid
-            Console.WriteLine("valid2");
-        }
-        else
-        {
-            //No extension
-            Console.WriteLine("Please add a file extension. Example: .txt or .exe");
-        }
-
-        //CHeck if its an absolute path
-
-
 
         //navigate to this directory
 
@@ -160,9 +197,18 @@ public class Demo
     public static void Main()
     {
         //testing space
-        FileSystem testFileSystem = new FileSystem();
 
+        //Test fileSystem constructor
+        FileSystem testFileSystem = new FileSystem();
         testFileSystem.PrintFileSystem();
-        testFileSystem.AddFile(null);
+
+        //Test file paths
+        string[]  testStrings  = {" ", "/", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/FileA.txt"};
+        foreach (string item in testStrings)
+        {
+            Console.WriteLine(item);
+            testFileSystem.AddFile(item);
+            Console.WriteLine(" ");
+        }
     }
 }
