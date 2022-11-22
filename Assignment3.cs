@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -14,11 +15,6 @@ public class FileSystem
 {
     private class Node
     {
-        public class List <T>
-        {
-
-        }
-
         public string directory;
         public List<string> file;
         public Node leftMostChild;
@@ -35,7 +31,7 @@ public class FileSystem
             directory = "/",
             leftMostChild = null,
             rightSibling = null,
-            file = null
+            file = new List<string>()
         };
     }
 
@@ -123,22 +119,78 @@ public class FileSystem
     {
         //Check proper address given
         if (CheckFilePath(address)) {
-            //address is valid
+            //Address is valid
         }
         else {
             Console.WriteLine("File not added. Invalid path");
             return false;
         }
-        
 
-        //navigate to this directory
+        //Splits the address into a list of directories
+        string[] directoryArray = address.Split('/');
 
-        //CHeck if their are conflicts
+        //Split() takes everything before the '/' so it doesn't capture the root name, so I add it back in
+        if (directoryArray[0] == "") {
+            directoryArray[0] = "/";
+        }
 
-        //if no conflicts add file
+        Node navigationNode = root;
+        string filename = Path.GetFileName(address);
+        foreach (var dir in directoryArray)
+        {
+            if (dir == filename)
+            {
+                //Correct directory
 
+                //Check for existing file
+                foreach (string existingFileInDirectory in navigationNode.file)
+                {
+                    if (filename == existingFileInDirectory) {
+                        Console.WriteLine("File already exists in this directory.");
+                        return false;
+                    }
+                }
 
+                //Add file
+                navigationNode.file.Add(filename);
+                return true;  
+            }
+            else {
+                if (dir == "/")
+                {
+                    //Skip, root directory
+                }
+                else {
+                    //Navigate to correct directory
 
+                    //Check leftmost child, determine if there are subdirectories
+                    if (navigationNode.leftMostChild == null)
+                    {
+                        //No subdirectories
+                        Console.WriteLine("Path contains directorie(s) not created in this filesystem.");
+                        return false;
+                    }
+                    else {
+                        //Check left child matchs
+                        if (dir == navigationNode.leftMostChild.directory) {
+                            //Move to this directory
+                            navigationNode = navigationNode.leftMostChild;
+                        }
+                        else {
+                            //Check directories (right-children) on the same level as the left-child
+                            while (navigationNode.rightSibling != null)
+                            {
+                                if (dir == navigationNode.rightSibling.directory)
+                                {
+                                    //Move to this directory
+                                    navigationNode = navigationNode.rightSibling;
+                                }
+                            }
+                        } 
+                    }
+                }
+            }
+        }
         return false; //placeholder, replace with real code
     }
 
@@ -194,7 +246,10 @@ public class FileSystem
 
         /*Node traversalNode = this.root;
         while (traversalNode.leftMostChild != null) { 
-            
+            //Print all files in directory
+                foreach (string file in navigationNode.file) {
+                    Console.WriteLine(file);
+                }
         }*/
     }
 }
@@ -218,6 +273,10 @@ public class Demo
             Console.WriteLine(" ");
         }
 
-        
+        //test duplicate files
+        testFileSystem.AddFile("/FileA.txt");
+        testFileSystem.AddFile("/FileB.txt");
+        testFileSystem.AddFile("/FileA.txt");
+
     }
 }
