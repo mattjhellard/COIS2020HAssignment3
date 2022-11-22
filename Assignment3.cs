@@ -241,18 +241,18 @@ public class FileSystem
     }
     private int NumberFiles(Node localRoot)
     {
-        int count = localRoot.file.Count;
-        int leftMostChildCount = 0;
-        int rightSiblingCount = 0;
-        if(localRoot.leftMostChild != null)
+        int count = localRoot.file.Count; //get filecount of local directory
+        int leftMostChildCount = 0; //will be count of first subdirectory
+        int rightSiblingCount = 0; //will be count of right sibling directory
+        if(localRoot.leftMostChild != null) //if child null then count stays at 0
         {
-            leftMostChildCount = NumberFiles(localRoot.leftMostChild);
+            leftMostChildCount = NumberFiles(localRoot.leftMostChild); //recursively get count of all files connected to leftMostChild
         }
-        if(localRoot.rightSibling != null)
+        if(localRoot.rightSibling != null) //if sibling null then count stays 0
         {
-            rightSiblingCount = NumberFiles(localRoot.rightSibling);
+            rightSiblingCount = NumberFiles(localRoot.rightSibling); //recursively get count of all files connected to rightSibling
         }
-        return count + leftMostChildCount + rightSiblingCount;
+        return count + leftMostChildCount + rightSiblingCount; //return results, keep in mind this is how recursions get back to their initial calls too
     }
 
     // Prints the directories in a pre-order fashion along with their files
