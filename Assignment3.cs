@@ -236,8 +236,8 @@ public class FileSystem
 
     // Returns the number of files in the file system (Do not add a count as a data member)
     public int NumberFiles()
-    { //working on this - MH
-        return NumberFiles(root);
+    {
+        return NumberFiles(root); //calls recursive version
     }
     private int NumberFiles(Node localRoot)
     {
