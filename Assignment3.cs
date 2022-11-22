@@ -293,5 +293,10 @@ public class Demo
         testFileSystem.AddFile("/FileB.txt");
         testFileSystem.AddFile("/FileA.txt");
 
+        //test NumberFiles method
+        Console.WriteLine("\nCount:"+testFileSystem.NumberFiles());
+        
+        //keeps console open for VS
+        Console.ReadLine();
     }
 }
