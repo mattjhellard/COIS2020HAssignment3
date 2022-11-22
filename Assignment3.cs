@@ -1,4 +1,6 @@
 ﻿/*
+ * Authors (alphabetical): Cole Miller, Jesse Laframboise, Matthew Hellard
+ * 
  * how to open this repository in VS:
  * -link VS to your github account
  * -clone this repository in VS
