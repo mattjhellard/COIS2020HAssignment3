@@ -235,8 +235,8 @@ public class FileSystem
     }
 
     // Returns the number of files in the file system (Do not add a count as a data member)
-    public int NumberFiles() 
-    {
+    public int NumberFiles()
+    { //working on this - MH
         return 0; //placeholder, replace with real code
     }
 
