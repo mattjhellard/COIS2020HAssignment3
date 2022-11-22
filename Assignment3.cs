@@ -237,7 +237,22 @@ public class FileSystem
     // Returns the number of files in the file system (Do not add a count as a data member)
     public int NumberFiles()
     { //working on this - MH
-        return 0; //placeholder, replace with real code
+        return NumberFiles(root);
+    }
+    private int NumberFiles(Node localRoot)
+    {
+        int count = localRoot.file.Count;
+        int leftMostChildCount = 0;
+        int rightSiblingCount = 0;
+        if(localRoot.leftMostChild != null)
+        {
+            leftMostChildCount = NumberFiles(localRoot.leftMostChild);
+        }
+        if(localRoot.rightSibling != null)
+        {
+            rightSiblingCount = NumberFiles(localRoot.rightSibling);
+        }
+        return count + leftMostChildCount + rightSiblingCount;
     }
 
     // Prints the directories in a pre-order fashion along with their files
