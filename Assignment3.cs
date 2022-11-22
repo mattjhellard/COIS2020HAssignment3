@@ -39,7 +39,7 @@ public class FileSystem
         };
     }
 
-    //Check if the filename contains invalid characters
+    /*//Check if the filename contains invalid characters
     string CheckInvalidCharacters(string stringToCheck, char[] invalidCharacters)
     {
         string invalidMsg = " ";
@@ -64,15 +64,11 @@ public class FileSystem
             }
         }
         return invalidMsg;
-    }
+    }*/
 
-    // Adds a file at the given address
-    // Returns false if the file already exists at that address or the path is undefined; true otherwise
-    public bool AddFile(string address) 
-    {
-        //Check proper address given
-        //Format: "/DirectoryName/DirectoryName/.../Filename"
-
+    //Check proper address given
+    //Format: "/DirectoryName/DirectoryName/.../Filename"
+    private bool CheckFilePath(string address) {
         //Check if the path is null
         if (address != null)
         {
@@ -80,31 +76,18 @@ public class FileSystem
         }
         else
         {
-            //null string
             Console.WriteLine("String can not be null.");
             return false;
         }
 
-        //Check if the path contains invalid characters
-        //below but just the path
-         
-
-
-        //Check if the filename contains invalid characters
-        char[] invalidFilenameChars = Path.GetInvalidFileNameChars();
-
-        //Issue
-        string filename = Path.GetFileName(address);        //Use this as the check try to do this else fail for filename and directory
-        string invalidMsg = CheckInvalidCharacters(filename, invalidFilenameChars);
-
-        if (invalidMsg == " ")
+        //Check if the path or file name contains invalid characters
+        try
         {
-            //Valid
+            string filename = Path.GetFileName(address);
         }
-        else
+        catch
         {
-            //No extension
-            Console.WriteLine(invalidMsg);
+            Console.WriteLine("Invalid characters found");
             return false;
         }
 
@@ -115,8 +98,7 @@ public class FileSystem
         }
         else
         {
-            //Invalid file path
-            Console.WriteLine("Please enter a valid file path in the form: /Directory/.../Filename");
+            Console.WriteLine("Please enter a valid file path in the form: /Directory/.../Filename.extension");
             return false;
         }
 
@@ -127,10 +109,27 @@ public class FileSystem
         }
         else
         {
-            //No extension
             Console.WriteLine("Please add a file extension. Example: .txt or .exe");
             return false;
         }
+
+        //All previous tests passed
+        return true;
+    }
+
+    // Adds a file at the given address
+    // Returns false if the file already exists at that address or the path is undefined; true otherwise
+    public bool AddFile(string address) 
+    {
+        //Check proper address given
+        if (CheckFilePath(address)) {
+            //address is valid
+        }
+        else {
+            Console.WriteLine("File not added. Invalid path");
+            return false;
+        }
+        
 
         //navigate to this directory
 
@@ -147,8 +146,16 @@ public class FileSystem
     // Returns false if the file is not found at that address or the path is undefined; true otherwise
     public bool RemoveFile(string address) 
     {
-        //CHeck proper address given
-
+        //Check proper address given
+        if (CheckFilePath(address))
+        {
+            //address is valid
+        }
+        else
+        {
+            Console.WriteLine("File not removed. Invalid path");
+            return false;
+        }
 
         //navigate to this directory
 
@@ -183,7 +190,7 @@ public class FileSystem
 
     // Prints the directories in a pre-order fashion along with their files
     public void PrintFileSystem() {
-        Console.WriteLine(this.root.directory);
+        //Console.WriteLine(this.root.directory);
 
         /*Node traversalNode = this.root;
         while (traversalNode.leftMostChild != null) { 
@@ -202,13 +209,15 @@ public class Demo
         FileSystem testFileSystem = new FileSystem();
         testFileSystem.PrintFileSystem();
 
-        //Test file paths
-        string[]  testStrings  = {" ", "/", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/FileA.txt"};
+        //Test filenames
+        string[]  testStrings  = {" ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt" };
         foreach (string item in testStrings)
         {
             Console.WriteLine(item);
             testFileSystem.AddFile(item);
             Console.WriteLine(" ");
         }
+
+        
     }
 }
