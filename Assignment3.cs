@@ -205,15 +205,24 @@ public class FileSystem
             return false;
         }
 
-        //navigate to this directory
+        //Go to the file's directory
+        Node navigationNode = NavigateToDirectory(root, address);
 
-        //CHeck if their are conflicts
-
-        //if no conflicts remove file
-
-
-
-        return false; //placeholder, replace with real code
+        //Remove file
+        if (navigationNode != null)
+        {
+            string file = Path.GetFileName(address);
+            if (navigationNode.file.Contains(file))
+            {
+                navigationNode.file.Remove(file);
+                return true;
+            }
+            else {
+                Console.WriteLine("No file found, cannot remove.");
+                return false;
+            }   
+        }
+        return false;
     }
 
     // Adds a directory at the given address
@@ -276,8 +285,18 @@ public class Demo
         //string[] testStrings = { "/FileA.txt", "/FileA.txt", "/FileB.txt" };
         foreach (string item in testStrings)
         {
-            Console.WriteLine(item);
+            Console.WriteLine("File to add: " + item);
             testFileSystem.AddFile(item);
+            testFileSystem.PrintFileSystem();
+            Console.WriteLine(" ");
+        }
+
+        //Test remove file
+        string[] testRemoveStrings = {"/FileA.txt", "/FileA.txt", "/", "/fileasdb.txt"};
+        foreach (string item in testRemoveStrings)
+        {
+            Console.WriteLine("File to remove: " + item);
+            testFileSystem.RemoveFile(item);
             testFileSystem.PrintFileSystem();
             Console.WriteLine(" ");
         }
