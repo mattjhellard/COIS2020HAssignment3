@@ -1,4 +1,6 @@
 ﻿/*
+ * Authors (alphabetical): Cole Miller, Jesse Laframboise, Matthew Hellard
+ * 
  * how to open this repository in VS:
  * -link VS to your github account
  * -clone this repository in VS
@@ -229,9 +231,24 @@ public class FileSystem
     }
 
     // Returns the number of files in the file system (Do not add a count as a data member)
-    public int NumberFiles() 
+    public int NumberFiles()
     {
-        return 0; //placeholder, replace with real code
+        return NumberFiles(root); //calls recursive version
+    }
+    private int NumberFiles(Node localRoot)
+    {
+        int count = localRoot.file.Count; //get filecount of local directory
+        int leftMostChildCount = 0; //will be count of first subdirectory
+        int rightSiblingCount = 0; //will be count of right sibling directory
+        if(localRoot.leftMostChild != null) //if child null then count stays at 0
+        {
+            leftMostChildCount = NumberFiles(localRoot.leftMostChild); //recursively get count of all files connected to leftMostChild
+        }
+        if(localRoot.rightSibling != null) //if sibling null then count stays 0
+        {
+            rightSiblingCount = NumberFiles(localRoot.rightSibling); //recursively get count of all files connected to rightSibling
+        }
+        return count + leftMostChildCount + rightSiblingCount; //return results, keep in mind this is how recursions get back to their initial calls too
     }
 
     // Prints the directories in a pre-order fashion along with their files
@@ -265,5 +282,10 @@ public class Demo
             Console.WriteLine(" ");
         }
 
+        //test NumberFiles method
+        Console.WriteLine("\nCount:"+testFileSystem.NumberFiles());
+        
+        //keeps console open for VS
+        Console.ReadLine();
     }
 }
