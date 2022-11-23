@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using static System.Net.WebRequestMethods;
 
 public class FileSystem
 {
@@ -34,33 +35,6 @@ public class FileSystem
             file = new List<string>()
         };
     }
-
-    /*//Check if the filename contains invalid characters
-    string CheckInvalidCharacters(string stringToCheck, char[] invalidCharacters)
-    {
-        string invalidMsg = " ";
-        char[] invalidFilenameChars = Path.GetInvalidFileNameChars();
-        string filename = Path.GetFileName(stringToCheck);
-
-        foreach (char c in filename)
-        {
-            foreach (char invalidChar in invalidFilenameChars)
-            {
-                if (c == invalidChar)
-                {
-                    //Invalid character detected
-                    invalidMsg = "Invalid characters found: " + invalidChar;
-                    Console.WriteLine(invalidMsg);
-                    break;
-                }
-            }
-            if (invalidMsg != " ")
-            {
-                break;
-            }
-        }
-        return invalidMsg;
-    }*/
 
     //Check proper address given
     //Format: "/DirectoryName/DirectoryName/.../Filename"
@@ -113,6 +87,81 @@ public class FileSystem
         return true;
     }
 
+    //Takes a full path address and navigates to the directory where the file or directory should be inserted into
+    private Node NavigateToDirectory(Node navigationNode, string address)
+    {
+        //Splits the address into a list of directories
+        string[] directoryArray = address.Split('/');
+
+        //Split() takes everything before the '/' so it doesn't capture the root name, so I add it back in
+        if (directoryArray[0] == "")
+        {
+            directoryArray[0] = "/";
+        }
+
+        string filename = Path.GetFileName(address);
+       
+        //Move through each directory in the array
+        foreach (var dir in directoryArray)
+        {
+            if (dir == filename)
+            {
+                //Correct directory
+                
+                //Check for existing file
+                foreach (string existingFileInDirectory in navigationNode.file)
+                {
+                    if (filename == existingFileInDirectory)
+                    {
+                        Console.WriteLine("File already exists in this directory.");
+                        return navigationNode = null;
+                    }
+                }
+                // File or Directory can be added
+                return navigationNode;
+            }
+            else
+            {
+                if (dir == "/")
+                {
+                    //Skip, root directory
+                }
+                else
+                {
+                    //Check leftmost child, determine if there are subdirectories
+                    if (navigationNode.leftMostChild == null)
+                    {
+                        //No subdirectories
+                        Console.WriteLine("Path contains directorie(s) not created in this filesystem.");
+                        return navigationNode = null;
+                    }
+                    else
+                    {
+                        //Check left child matchs
+                        if (dir == navigationNode.leftMostChild.directory)
+                        {
+                            //Move to this directory
+                            navigationNode = navigationNode.leftMostChild;
+                        }
+                        else
+                        {
+                            //Check directories (right-children) on the same level as the left-child
+                            while (navigationNode.rightSibling != null)
+                            {
+                                if (dir == navigationNode.rightSibling.directory)
+                                {
+                                    //Move to this directory
+                                    navigationNode = navigationNode.rightSibling;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return navigationNode = null;
+    }
+    
     // Adds a file at the given address
     // Returns false if the file already exists at that address or the path is undefined; true otherwise
     public bool AddFile(string address) 
@@ -126,72 +175,17 @@ public class FileSystem
             return false;
         }
 
-        //Splits the address into a list of directories
-        string[] directoryArray = address.Split('/');
+        //Go to the file's directory
+        Node navigationNode = NavigateToDirectory(root, address);
 
-        //Split() takes everything before the '/' so it doesn't capture the root name, so I add it back in
-        if (directoryArray[0] == "") {
-            directoryArray[0] = "/";
+        //Add file
+        if (navigationNode != null) {
+            string file = Path.GetFileName(address);
+            navigationNode.file.Add(file);
+
+            return true;
         }
-
-        Node navigationNode = root;
-        string filename = Path.GetFileName(address);
-        foreach (var dir in directoryArray)
-        {
-            if (dir == filename)
-            {
-                //Correct directory
-
-                //Check for existing file
-                foreach (string existingFileInDirectory in navigationNode.file)
-                {
-                    if (filename == existingFileInDirectory) {
-                        Console.WriteLine("File already exists in this directory.");
-                        return false;
-                    }
-                }
-
-                //Add file
-                navigationNode.file.Add(filename);
-                return true;  
-            }
-            else {
-                if (dir == "/")
-                {
-                    //Skip, root directory
-                }
-                else {
-                    //Navigate to correct directory
-
-                    //Check leftmost child, determine if there are subdirectories
-                    if (navigationNode.leftMostChild == null)
-                    {
-                        //No subdirectories
-                        Console.WriteLine("Path contains directorie(s) not created in this filesystem.");
-                        return false;
-                    }
-                    else {
-                        //Check left child matchs
-                        if (dir == navigationNode.leftMostChild.directory) {
-                            //Move to this directory
-                            navigationNode = navigationNode.leftMostChild;
-                        }
-                        else {
-                            //Check directories (right-children) on the same level as the left-child
-                            while (navigationNode.rightSibling != null)
-                            {
-                                if (dir == navigationNode.rightSibling.directory)
-                                {
-                                    //Move to this directory
-                                    navigationNode = navigationNode.rightSibling;
-                                }
-                            }
-                        } 
-                    }
-                }
-            }
-        }
-        return false; //placeholder, replace with real code
+        return false;
     }
 
     // Removes the file at the given address
@@ -242,15 +236,11 @@ public class FileSystem
 
     // Prints the directories in a pre-order fashion along with their files
     public void PrintFileSystem() {
-        //Console.WriteLine(this.root.directory);
-
-        /*Node traversalNode = this.root;
-        while (traversalNode.leftMostChild != null) { 
-            //Print all files in directory
-                foreach (string file in navigationNode.file) {
-                    Console.WriteLine(file);
-                }
-        }*/
+        //Pre-order traversal
+        Console.WriteLine("Directory: " + this.root.directory);
+        foreach (var file in this.root.file) {
+            Console.WriteLine("File: " + file);
+        }
     }
 }
 
@@ -262,21 +252,18 @@ public class Demo
 
         //Test fileSystem constructor
         FileSystem testFileSystem = new FileSystem();
-        testFileSystem.PrintFileSystem();
+        //testFileSystem.PrintFileSystem();
 
         //Test filenames
-        string[]  testStrings  = {" ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt" };
+        string[]  testStrings  = {" ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt", "/FileA.txt", "/FileB.txt" };
+        //string[] testStrings = { "/FileA.txt", "/FileA.txt", "/FileB.txt" };
         foreach (string item in testStrings)
         {
             Console.WriteLine(item);
             testFileSystem.AddFile(item);
+            testFileSystem.PrintFileSystem();
             Console.WriteLine(" ");
         }
-
-        //test duplicate files
-        testFileSystem.AddFile("/FileA.txt");
-        testFileSystem.AddFile("/FileB.txt");
-        testFileSystem.AddFile("/FileA.txt");
 
     }
 }
