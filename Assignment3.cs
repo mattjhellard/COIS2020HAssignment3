@@ -253,7 +253,7 @@ public class FileSystem
 
     // Prints the directories in a pre-order fashion along with their files
     public void PrintFileSystem() {
-        //Pre-order traversal
+        //Pre-order traversal  *** not complete ***
         Console.WriteLine("Directory: " + this.root.directory);
         foreach (var file in this.root.file) {
             Console.WriteLine("File: " + file);
