@@ -429,6 +429,7 @@ public class Demo
                 case 'n': //case reset filesystem
                     filetree = new FileSystem();
                     break;
+
                 case 'f': //case add file
                     try
                     {
@@ -448,6 +449,7 @@ public class Demo
                         Console.WriteLine("file add error");
                     }
                     break;
+
                 case 'a': //case add directory
                     try
                     {
@@ -467,6 +469,7 @@ public class Demo
                         Console.WriteLine("Directory add error");
                     }
                     break;
+
                 case 'd': //case delete file
                     try
                     {
@@ -486,6 +489,7 @@ public class Demo
                         Console.WriteLine("File removal error");
                     }
                     break;
+
                 case 'r': //case delete directory
                     try
                     {
@@ -505,11 +509,13 @@ public class Demo
                         Console.WriteLine("directory removal error");
                     }
                     break;
+
                 case 'c': //case count
                     Console.WriteLine("File count is " + filetree.NumberFiles());
                     Console.WriteLine("Hit enter to return");
                     Console.ReadLine(); //keep filecount open
                     break;
+
                 case 'p': //case print file system whole
                     filetree.PrintFileSystem();
                     Console.WriteLine("\nHit enter to return");
