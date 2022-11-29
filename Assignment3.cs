@@ -227,7 +227,7 @@ public class FileSystem
 
     // Adds a directory at the given address
     // Returns false if the directory already exists or the path is undefined; true otherwise
-    public bool AddDirectory(string address) // working on this -MH
+    public bool AddDirectory(string address)
     {
         string[] nav = address.Split('/'); //navigation array
         if (root.leftMostChild == null) //if first possible location is empty (no non-root directories at all),
@@ -303,7 +303,7 @@ public class FileSystem
 
     // Removes the directory (and its subdirectories) at the given address
     // Returns false if the directory is not found or the path is undefined; true otherwise
-    public bool RemoveDirectory(string address) //working on this - MH
+    public bool RemoveDirectory(string address)
     {
         if (root.leftMostChild != null && address == '/' + root.leftMostChild.directory) //checks first removable directory, if it's the one we want to delete,
         {
@@ -381,7 +381,7 @@ public class FileSystem
 }
 
 public class Demo
-{
+{ //creating comprehensive menu for Main program, current testing space will stay intact and be accessible through the menu -MH
     public static void Main()
     {
         //testing space
