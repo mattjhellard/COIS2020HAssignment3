@@ -27,7 +27,8 @@ public class FileSystem
     private Node root;
 
     // Creates a file system with a root directory where the name of the root directory is “/”.
-    public FileSystem() {
+    public FileSystem()
+    {
         root = new Node
         {
             //Initialize values
@@ -40,7 +41,8 @@ public class FileSystem
 
     //Check proper address given
     //Format: "/DirectoryName/DirectoryName/.../Filename"
-    private bool CheckFilePath(string address) {
+    private bool CheckFilePath(string address)
+    {
         //Check if the path is null
         if (address != null)
         {
@@ -102,14 +104,14 @@ public class FileSystem
         }
 
         string filename = Path.GetFileName(address);
-       
+
         //Move through each directory in the array
         foreach (var dir in directoryArray)
         {
             if (dir == filename)
             {
                 //Correct directory
-                
+
                 //Check for existing file
                 foreach (string existingFileInDirectory in navigationNode.file)
                 {
@@ -163,16 +165,18 @@ public class FileSystem
         }
         return navigationNode = null;
     }
-    
+
     // Adds a file at the given address
     // Returns false if the file already exists at that address or the path is undefined; true otherwise
-    public bool AddFile(string address) 
+    public bool AddFile(string address)
     {
         //Check proper address given
-        if (CheckFilePath(address)) {
+        if (CheckFilePath(address))
+        {
             //Address is valid
         }
-        else {
+        else
+        {
             Console.WriteLine("File not added. Invalid path");
             return false;
         }
@@ -181,7 +185,8 @@ public class FileSystem
         Node navigationNode = NavigateToDirectory(root, address);
 
         //Add file
-        if (navigationNode != null) {
+        if (navigationNode != null)
+        {
             string file = Path.GetFileName(address);
             navigationNode.file.Add(file);
 
@@ -192,7 +197,7 @@ public class FileSystem
 
     // Removes the file at the given address
     // Returns false if the file is not found at that address or the path is undefined; true otherwise
-    public bool RemoveFile(string address) 
+    public bool RemoveFile(string address)
     {
         //Check proper address given
         if (CheckFilePath(address))
@@ -217,10 +222,11 @@ public class FileSystem
                 navigationNode.file.Remove(file);
                 return true;
             }
-            else {
+            else
+            {
                 Console.WriteLine("No file found, cannot remove.");
                 return false;
-            }   
+            }
         }
         return false;
     }
@@ -232,7 +238,7 @@ public class FileSystem
         string[] nav = address.Split('/'); //navigation array
         if (root.leftMostChild == null) //if first possible location is empty (no non-root directories at all),
         {
-            if(nav.Length > 2)
+            if (nav.Length > 2)
             {
                 return false; //failure for case of depth mismatch in initially empty FileSystem
             }
@@ -247,16 +253,16 @@ public class FileSystem
         }
         int i = 1; //navigation index
         Node p = root.leftMostChild; //traversal node, root.leftMostChild should not be null at this point (checked earlier)
-        while(i < nav.Length - 1) //repeats until return or until final index reached
+        while (i < nav.Length - 1) //repeats until return or until final index reached
         {
             if (p == null) //if p is null here then the traversal node ran off the end of a sibling chain or jumped into an empty but not final child
             {
                 return false; //failure for case of desired path not found
             }
-            if(p.directory == nav[i]) //if a current point on path found
+            if (p.directory == nav[i]) //if a current point on path found
             {
                 i++; //move on to next point
-                if(i==nav.Length-1 && p.leftMostChild == null) //if about to jump into empty child but that child is would-be destination,
+                if (i == nav.Length - 1 && p.leftMostChild == null) //if about to jump into empty child but that child is would-be destination,
                 {
                     p.leftMostChild = new Node //make the node there,
                     {
@@ -271,7 +277,7 @@ public class FileSystem
                 {
                     p = p.leftMostChild;
                 }
-                    
+
             }
             else //if current point on path is not found
             {
@@ -279,13 +285,13 @@ public class FileSystem
             }
         }
         //final index reached at this point, i now refers to desired directory name and a duplicate is illegal
-        if(p.directory == nav[i]) //if duplicate of desired directory name found at first point
+        if (p.directory == nav[i]) //if duplicate of desired directory name found at first point
         {
             return false; //failure for case of first point being duplicate
         }
         while (p.rightSibling != null) //looks and moves right until failure or end of line
         {
-            if(p.rightSibling.directory == nav[i]) //if duplicate found to right
+            if (p.rightSibling.directory == nav[i]) //if duplicate found to right
             {
                 return false; //failure for case of right sibling being duplicate
             }
@@ -315,14 +321,14 @@ public class FileSystem
         Node p = root.leftMostChild; //traversal node, set to first directory (already checked so it's "safe")
         while (i < nav.Length - 1) //repeats until return or final index reached
         {
-            if(p == null)//if p is null at this point then it ran off the end of a sibling chain or jumped into an empty child 
+            if (p == null)//if p is null at this point then it ran off the end of a sibling chain or jumped into an empty child 
             {
                 return false; //failure for case of path not found
             }
-            if(p.directory == nav[i]) //if point on path is found
+            if (p.directory == nav[i]) //if point on path is found
             {
                 i++; //move on to next point
-                if(p.leftMostChild != null && i == nav.Length-1 && p.leftMostChild.directory == nav[i]) //if jumping into child that's would-be desired delete
+                if (p.leftMostChild != null && i == nav.Length - 1 && p.leftMostChild.directory == nav[i]) //if jumping into child that's would-be desired delete
                 {
                     p.leftMostChild = p.leftMostChild.rightSibling; //delete child by redirecting around it
                     return true; //return true to mark success and prevent further code in method from running
@@ -338,9 +344,9 @@ public class FileSystem
             }
         }
         //final index reached at this point, i now refers to desired deletion name and first instance (should also be only) will be deleted
-        while(p.rightSibling != null) //no scenario where first p hasn't already been checked, either caught and dealt with at very beginning or before jumping to it 
+        while (p.rightSibling != null) //no scenario where first p hasn't already been checked, either caught and dealt with at very beginning or before jumping to it 
         {
-            if(p.rightSibling.directory == nav[i]) //if desired delete found
+            if (p.rightSibling.directory == nav[i]) //if desired delete found
             {
                 p.rightSibling = p.rightSibling.rightSibling; //delete by redirecting around
                 return true;
@@ -359,11 +365,11 @@ public class FileSystem
         int count = localRoot.file.Count; //get filecount of local directory
         int leftMostChildCount = 0; //will be count of first subdirectory
         int rightSiblingCount = 0; //will be count of right sibling directory
-        if(localRoot.leftMostChild != null) //if child null then count stays at 0
+        if (localRoot.leftMostChild != null) //if child null then count stays at 0
         {
             leftMostChildCount = NumberFiles(localRoot.leftMostChild); //recursively get count of all files connected to leftMostChild
         }
-        if(localRoot.rightSibling != null) //if sibling null then count stays 0
+        if (localRoot.rightSibling != null) //if sibling null then count stays 0
         {
             rightSiblingCount = NumberFiles(localRoot.rightSibling); //recursively get count of all files connected to rightSibling
         }
@@ -371,10 +377,12 @@ public class FileSystem
     }
 
     // Prints the directories in a pre-order fashion along with their files
-    public void PrintFileSystem() {
+    public void PrintFileSystem()
+    {
         //Pre-order traversal  *** not complete ***
         Console.WriteLine("Directory: " + this.root.directory);
-        foreach (var file in this.root.file) {
+        foreach (var file in this.root.file)
+        {
             Console.WriteLine("File: " + file);
         }
     }
@@ -384,37 +392,175 @@ public class Demo
 { //creating comprehensive menu for Main program, current testing space will stay intact and be accessible through the menu -MH
     public static void Main()
     {
-        //testing space
-
-        //Test fileSystem constructor
-        FileSystem testFileSystem = new FileSystem();
-        //testFileSystem.PrintFileSystem();
-
-        //Test filenames
-        string[]  testStrings  = {" ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt", "/FileA.txt", "/FileB.txt" };
-        //string[] testStrings = { "/FileA.txt", "/FileA.txt", "/FileB.txt" };
-        foreach (string item in testStrings)
+        Console.WriteLine("-== File System =--= Authors (Alphabetical): Cole Miller, Jesse Laframboise, Matthew Hellard ==-");
+        bool run = true;
+        bool valid;
+        char Input = 'q'; //set to something or VS complains
+        FileSystem filetree = new FileSystem();
+        while (run)
         {
-            Console.WriteLine("File to add: " + item);
-            testFileSystem.AddFile(item);
-            testFileSystem.PrintFileSystem();
-            Console.WriteLine(" ");
-        }
 
-        //Test remove file
-        string[] testRemoveStrings = {"/FileA.txt", "/FileA.txt", "/", "/fileasdb.txt"};
-        foreach (string item in testRemoveStrings)
-        {
-            Console.WriteLine("File to remove: " + item);
-            testFileSystem.RemoveFile(item);
-            testFileSystem.PrintFileSystem();
-            Console.WriteLine(" ");
-        }
+            Console.WriteLine("Menu:" +
+                "\nReset File System (n)" +
+                "\nAdd File ---------(f)" +
+                "\nAdd Directory ----(a)" +
+                "\nRemove File ------(d)" +
+                "\nRemove Directory -(r)" +
+                "\nPrint File Count -(c)" +
+                "\nPrint File System (p)" +
+                "\nUse Test Space ---(t)" +
+                "\nQuit -------------(q)");
+            valid = false;
+            while (valid == false)
+            {
+                Console.Write("Input :");
+                try
+                {
+                    Input = char.ToLower(Convert.ToChar(Console.ReadLine()));
+                    valid = true;
+                }
+                catch
+                {
+                    Console.WriteLine("Input error, please try again");
+                }
+            }
+            switch (Input)
+            {
+                case 'n': //case reset filesystem
+                    filetree = new FileSystem();
+                    break;
+                case 'f': //case add file
+                    try
+                    {
+                        Console.Write("new file path:");
+                        valid = filetree.AddFile(Console.ReadLine());
+                        if (valid)
+                        {
+                            Console.WriteLine("File added");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not add file");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("file add error");
+                    }
+                    break;
+                case 'a': //case add directory
+                    try
+                    {
+                        Console.Write("new directory path:");
+                        valid = filetree.AddDirectory(Console.ReadLine());
+                        if (valid)
+                        {
+                            Console.WriteLine("Directory added");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not add directory");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Directory add error");
+                    }
+                    break;
+                case 'd': //case delete file
+                    try
+                    {
+                        Console.Write("file removal path:");
+                        valid = filetree.RemoveFile(Console.ReadLine());
+                        if (valid)
+                        {
+                            Console.WriteLine("file removed");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not remove file");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("File removal error");
+                    }
+                    break;
+                case 'r': //case delete directory
+                    try
+                    {
+                        Console.Write("Directory removal path:");
+                        valid = filetree.RemoveDirectory(Console.ReadLine());
+                        if (valid)
+                        {
+                            Console.WriteLine("Directory removed");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not remove directory");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("directory removal error");
+                    }
+                    break;
+                case 'c': //case count
+                    Console.WriteLine("File count is " + filetree.NumberFiles());
+                    Console.WriteLine("Hit enter to return");
+                    Console.ReadLine(); //keep filecount open
+                    break;
+                case 'p': //case print file system whole
+                    filetree.PrintFileSystem();
+                    Console.WriteLine("\nHit enter to return");
+                    Console.ReadLine(); //keep printed filesystem open
+                    break;
 
-        //test NumberFiles method
-        Console.WriteLine("\nCount:"+testFileSystem.NumberFiles());
-        
-        //keeps console open for VS
-        Console.ReadLine();
+                case 't': //case original testing space
+                          //testing space
+
+                    //Test fileSystem constructor
+                    FileSystem testFileSystem = new FileSystem();
+                    //testFileSystem.PrintFileSystem();
+
+                    //Test filenames
+                    string[] testStrings = { " ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt", "/FileA.txt", "/FileB.txt" };
+                    //string[] testStrings = { "/FileA.txt", "/FileA.txt", "/FileB.txt" };
+                    foreach (string item in testStrings)
+                    {
+                        Console.WriteLine("File to add: " + item);
+                        testFileSystem.AddFile(item);
+                        testFileSystem.PrintFileSystem();
+                        Console.WriteLine(" ");
+                    }
+
+                    //Test remove file
+                    string[] testRemoveStrings = { "/FileA.txt", "/FileA.txt", "/", "/fileasdb.txt" };
+                    foreach (string item in testRemoveStrings)
+                    {
+                        Console.WriteLine("File to remove: " + item);
+                        testFileSystem.RemoveFile(item);
+                        testFileSystem.PrintFileSystem();
+                        Console.WriteLine(" ");
+                    }
+
+                    //test NumberFiles method
+                    Console.WriteLine("\nCount:" + testFileSystem.NumberFiles());
+
+                    Console.WriteLine("Hit enter to return");
+                    Console.ReadLine(); //keeps testing space open
+
+                    //end of testing space
+                    break;
+
+                case 'q': //case quit
+                    run = false;
+                    break;
+
+                default: //gets here if input is char but not valid menu selection
+                    Console.WriteLine("Input not recognized");
+                    break;
+            }
+        }
     }
 }
