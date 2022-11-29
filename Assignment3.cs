@@ -312,33 +312,41 @@ public class FileSystem
         }
         string[] nav = address.Split('/'); //navigation array
         int i = 1; //navigation index
-        Node p = new Node(); //traversal node
-        p = root.leftMostChild; //set to first directory (already checked so it's "safe")
-        while (p != null) //exits loop if p becomes null (should only happen on failure)
+        Node p = root.leftMostChild; //traversal node, set to first directory (already checked so it's "safe")
+        while (i < nav.Length - 1) //repeats until return or final index reached
         {
-           // initially checks for final destination node neighboring current node
-           if(p.rightSibling != null && p.rightSibling.directory == nav[i] && i==nav.Length-1) //checks immediate right sibling for validity
-            { //if valid, removes it by redirecting around it, returns true (skips rest of method)
-                p.rightSibling = p.rightSibling.rightSibling;
-                return true;
-            }
-           if(p.leftMostChild != null && p.leftMostChild.directory == nav[i] && i == nav.Length - 1) //checks immediate leftmost child for validity
-            { //if valid, removes it by redirecting around it, returns true (skips rest of method)
-                p.leftMostChild = p.leftMostChild.rightSibling;
-                return true;
-            }
-           // then does traversing if no neighbor nodes are the final destination (can safely move to them)
-           if(p.directory == nav[i]) //if the current node matches a point on the destination path,
+            if(p == null)//if p is null at this point then it ran off the end of a sibling chain or jumped into an empty child 
             {
-                p = p.leftMostChild; //jump down accordingly,
-                i++; //move on to next point.
+                return false; //failure for case of path not found
             }
-            else //if current node does not match a point on the destination path,
+            if(p.directory == nav[i]) //if point on path is found
             {
-                p = p.rightSibling; //move right accordingly
+                i++; //move on to next point
+                if(p.leftMostChild != null && i == nav.Length-1 && p.leftMostChild.directory == nav[i]) //if jumping into child that's would-be desired delete
+                {
+                    p.leftMostChild = p.leftMostChild.rightSibling; //delete child by redirecting around it
+                    return true; //return true to mark success and prevent further code in method from running
+                }
+                else //otherwise just jump into child like normal
+                {
+                    p = p.leftMostChild;
+                }
+            }
+            else //if point on path not found this loop
+            {
+                p = p.rightSibling;
             }
         }
-        return false; //gets here in the event of a non-exceptional failure
+        //final index reached at this point, i now refers to desired deletion name and first instance (should also be only) will be deleted
+        while(p.rightSibling != null) //no scenario where first p hasn't already been checked, either caught and dealt with at very beginning or before jumping to it 
+        {
+            if(p.rightSibling.directory == nav[i]) //if desired delete found
+            {
+                p.rightSibling = p.rightSibling.rightSibling; //delete by redirecting around
+                return true;
+            }
+        }
+        return false; //gets here in the event of a non-exceptional failure, failure for case method ended but did not succeed, (usually because path not found)
     }
 
     // Returns the number of files in the file system (Do not add a count as a data member)
