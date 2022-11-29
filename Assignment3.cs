@@ -236,7 +236,40 @@ public class FileSystem
     // Returns false if the directory is not found or the path is undefined; true otherwise
     public bool RemoveDirectory(string address) //working on this - MH
     {
-        return false; //placeholder, replace with real code
+        if (root.leftMostChild != null && address == '/' + root.leftMostChild.directory) //checks first removable directory, if it's the one we want to delete,
+        {
+            root.leftMostChild = root.leftMostChild.rightSibling; //we delete it by redirecting around it
+            return true; //true because we sucessfully removed
+        }
+        string[] nav = address.Split('/'); //navigation array
+        int i = 1; //navigation index
+        Node p = new Node(); //traversal node
+        p = root.leftMostChild; //set to first directory (already checked so it's "safe")
+        while (p != null) //exits loop if p becomes null (should only happen on failure)
+        {
+           // initially checks for final destination node neighboring current node
+           if(p.rightSibling != null && p.rightSibling.directory == nav[i] && i==nav.Length-1) //checks immediate right sibling for validity
+            { //if valid, removes it by redirecting around it, returns true (skips rest of method)
+                p.rightSibling = p.rightSibling.rightSibling;
+                return true;
+            }
+           if(p.leftMostChild != null && p.leftMostChild.directory == nav[i] && i == nav.Length - 1) //checks immediate leftmost child for validity
+            { //if valid, removes it by redirecting around it, returns true (skips rest of method)
+                p.leftMostChild = p.leftMostChild.rightSibling;
+                return true;
+            }
+           // then does traversing if no neighbor nodes are the final destination (can safely move to them)
+           if(p.directory == nav[i]) //if the current node matches a point on the destination path,
+            {
+                p = p.leftMostChild; //jump down accordingly,
+                i++; //move on to next point.
+            }
+            else //if current node does not match a point on the destination path,
+            {
+                p = p.rightSibling; //move right accordingly
+            }
+        }
+        return false; //gets here in the event of a non-exceptional failure
     }
 
     // Returns the number of files in the file system (Do not add a count as a data member)
