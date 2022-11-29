@@ -227,9 +227,78 @@ public class FileSystem
 
     // Adds a directory at the given address
     // Returns false if the directory already exists or the path is undefined; true otherwise
-    public bool AddDirectory(string address) 
+    public bool AddDirectory(string address) // working on this -MH
     {
-        return false; //placeholder, replace with real code
+        string[] nav = address.Split('/'); //navigation array
+        if (root.leftMostChild == null) //if first possible location is empty (no non-root directories at all),
+        {
+            if(nav.Length > 2)
+            {
+                return false; //failure for case of depth mismatch in initially empty FileSystem
+            }
+            root.leftMostChild = new Node //place new directory at beginning of previously empty tree.
+            {
+                directory = nav[1], //at this point correct directory name will always be at index 1 of given address (0 will be empty and nothing beyond 1 should exist)
+                file = new List<string>(),
+                rightSibling = null,
+                leftMostChild = null
+            };
+            return true; //indicate success and prevent rest of code in method from running
+        }
+        int i = 1; //navigation index
+        Node p = root.leftMostChild; //traversal node, root.leftMostChild should not be null at this point (checked earlier)
+        while(i < nav.Length - 1) //repeats until return or until final index reached
+        {
+            if (p == null) //if p is null here then the traversal node ran off the end of a sibling chain or jumped into an empty but not final child
+            {
+                return false; //failure for case of desired path not found
+            }
+            if(p.directory == nav[i]) //if a current point on path found
+            {
+                i++; //move on to next point
+                if(i==nav.Length-1 && p.leftMostChild == null) //if about to jump into empty child but that child is would-be destination,
+                {
+                    p.leftMostChild = new Node //make the node there,
+                    {
+                        directory = nav[i],
+                        file = new List<string>(),
+                        rightSibling = null,
+                        leftMostChild = null
+                    };
+                    return true; //return true to indicate success and prevent rest of code in method from running.
+                }
+                else //otherwise just jump into the child like normal
+                {
+                    p = p.leftMostChild;
+                }
+                    
+            }
+            else //if current point on path is not found
+            {
+                p = p.rightSibling; //keep going right
+            }
+        }
+        //final index reached at this point, i now refers to desired directory name and a duplicate is illegal
+        if(p.directory == nav[i]) //if duplicate of desired directory name found at first point
+        {
+            return false; //failure for case of first point being duplicate
+        }
+        while (p.rightSibling != null) //looks and moves right until failure or end of line
+        {
+            if(p.rightSibling.directory == nav[i]) //if duplicate found to right
+            {
+                return false; //failure for case of right sibling being duplicate
+            }
+            p = p.rightSibling; //move to next point
+        }
+        p.rightSibling = new Node //all existing siblings checked for duplicates, right sibling is null at this point
+        {
+            directory = nav[i],
+            file = new List<string>(),
+            rightSibling = null,
+            leftMostChild = null
+        };
+        return true; //successful insert
     }
 
     // Removes the directory (and its subdirectories) at the given address
