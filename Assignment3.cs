@@ -50,8 +50,7 @@ public class FileSystem
         }
         else
         {
-            Console.WriteLine("String can not be null.");
-            return false;
+            throw new Exception("String can not be null.");
         }
 
         //Check if the path or file name contains invalid characters
@@ -61,8 +60,7 @@ public class FileSystem
         }
         catch
         {
-            Console.WriteLine("Invalid characters found");
-            return false;
+            throw new Exception("Invalid characters found");
         }
 
         //Check if the path starts at the root (a full path)
@@ -71,20 +69,8 @@ public class FileSystem
             //Valid
         }
         else
-        {
-            Console.WriteLine("Please enter a valid file path in the form: /Directory/.../Filename.extension");
-            return false;
-        }
-
-        //Check if the path has a valid extension eg .txt
-        if (Path.HasExtension(address))
-        {
-            //Valid
-        }
-        else
-        {
-            Console.WriteLine("Please add a file extension. Example: .txt or .exe");
-            return false;
+        {         
+            throw new Exception("Please enter a valid file path in the form: /Directory/.../Filename.extension");
         }
 
         //All previous tests passed
@@ -92,7 +78,7 @@ public class FileSystem
     }
 
     //Takes a full path address and navigates to the directory where the file or directory should be inserted into
-    private Node NavigateToDirectory(Node navigationNode, string address)
+    private Node NavigateToDirectory(Node navigationNode, string address, bool addFile)
     {
         //Splits the address into a list of directories
         string[] directoryArray = address.Split('/');
@@ -115,10 +101,10 @@ public class FileSystem
                 //Check for existing file
                 foreach (string existingFileInDirectory in navigationNode.file)
                 {
-                    if (filename == existingFileInDirectory)
+                    //addFile flag to determine if this throws an error, if the file is being removed it's expected that the file already exists
+                    if (filename == existingFileInDirectory && addFile == true)
                     {
-                        Console.WriteLine("File already exists in this directory.");
-                        return navigationNode = null;
+                        throw new Exception("File already exists in this directory.");
                     }
                 }
                 // File or Directory can be added
@@ -136,8 +122,7 @@ public class FileSystem
                     if (navigationNode.leftMostChild == null)
                     {
                         //No subdirectories
-                        Console.WriteLine("Path contains directorie(s) not created in this filesystem.");
-                        return navigationNode = null;
+                        throw new Exception("Path contains directorie(s) not created in this filesystem.");
                     }
                     else
                     {
@@ -177,12 +162,11 @@ public class FileSystem
         }
         else
         {
-            Console.WriteLine("File not added. Invalid path");
-            return false;
+            throw new Exception("File not added. Invalid path");
         }
 
         //Go to the file's directory
-        Node navigationNode = NavigateToDirectory(root, address);
+        Node navigationNode = NavigateToDirectory(root, address, true);
 
         //Add file
         if (navigationNode != null)
@@ -206,12 +190,11 @@ public class FileSystem
         }
         else
         {
-            Console.WriteLine("File not removed. Invalid path");
-            return false;
+            throw new Exception("File not removed. Invalid path");
         }
 
         //Go to the file's directory
-        Node navigationNode = NavigateToDirectory(root, address);
+        Node navigationNode = NavigateToDirectory(root, address, false);
 
         //Remove file
         if (navigationNode != null)
@@ -224,8 +207,7 @@ public class FileSystem
             }
             else
             {
-                Console.WriteLine("No file found, cannot remove.");
-                return false;
+                throw new Exception("No file found, cannot remove.");
             }
         }
         return false;
