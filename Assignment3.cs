@@ -101,7 +101,7 @@ public class FileSystem
                 //Check for existing file
                 foreach (string existingFileInDirectory in navigationNode.file)
                 {
-                    //addFile flag to determine if this throws an error, if the file is being removed it's expected that the file already exists
+                    //addFile flag to determine if this throws an error. If the file is being removed, it's expected that the file already exists
                     if (filename == existingFileInDirectory && addFile == true)
                     {
                         throw new Exception("File already exists in this directory.");
@@ -361,11 +361,27 @@ public class FileSystem
     // Prints the directories in a pre-order fashion along with their files
     public void PrintFileSystem()
     {
-        //Pre-order traversal  *** not complete ***
-        Console.WriteLine("Directory: " + this.root.directory);
-        foreach (var file in this.root.file)
+        Node currentNode = root;
+        preorderPrintDirAndFiles(currentNode, 0);
+    }
+
+    //Prints the directory name and files in the current directory/node passed, then recursively calls itself for any left-cildren or right-siblings 
+    private void preorderPrintDirAndFiles(Node rootDirectory, int indent) {
+        Console.WriteLine(new String(' ', indent) + "Directory: " + rootDirectory.directory);
+        foreach (var file in rootDirectory.file)
         {
-            Console.WriteLine("File: " + file);
+            Console.WriteLine(new String(' ', indent) + "File: " + file);
+        }
+
+        //Check for left child
+        if (rootDirectory.leftMostChild != null) {
+            preorderPrintDirAndFiles(rootDirectory.leftMostChild, indent + 5);
+        }
+
+        //Check for right sibling
+        if (rootDirectory.rightSibling != null)
+        {
+            preorderPrintDirAndFiles(rootDirectory.rightSibling, indent);
         }
     }
 }
