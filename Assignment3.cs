@@ -73,6 +73,24 @@ public class FileSystem
             throw new Exception("Please enter a valid file path in the form: /Directory/.../Filename.extension");
         }
 
+        //check if any addresses in path are empty
+        String[] addressArray = address.Split('/');
+        for(int i = 1; i<addressArray.Length; i++) //start index at 1 to skip auto empty index at 0
+        {
+            bool notEmpty = false; //will become true by end of foreach if any character in current string isn't blank
+            foreach(char character in addressArray[i])
+            {
+                if (character != ' ')
+                {
+                    notEmpty = true;
+                }
+            }
+            if(notEmpty == false) //if notEmpty is still false here it means the string that just got checked only contained blanks (illegal)
+            {
+                throw new Exception("Cannot use empty addresses");
+            }
+        }
+
         //All previous tests passed
         return true;
     }
@@ -217,6 +235,14 @@ public class FileSystem
     // Returns false if the directory already exists or the path is undefined; true otherwise
     public bool AddDirectory(string address)
     {
+        try //only work with valid addresses
+        {
+            CheckFilePath(address);
+        }
+        catch //if exception caught address was invalid
+        {
+            return false;
+        }
         string[] nav = address.Split('/'); //navigation array
         if (root.leftMostChild == null) //if first possible location is empty (no non-root directories at all),
         {
@@ -293,6 +319,14 @@ public class FileSystem
     // Returns false if the directory is not found or the path is undefined; true otherwise
     public bool RemoveDirectory(string address)
     {
+        try //only work with valid addresses
+        {
+            CheckFilePath(address);
+        }
+        catch //if exception caught address was invalid
+        {
+            return false;
+        }
         if (root.leftMostChild != null && address == '/' + root.leftMostChild.directory) //checks first removable directory, if it's the one we want to delete,
         {
             root.leftMostChild = root.leftMostChild.rightSibling; //we delete it by redirecting around it
@@ -397,7 +431,6 @@ public class Demo
         FileSystem filetree = new FileSystem();
         while (run)
         {
-
             Console.WriteLine("Menu:" +
                 "\nReset File System (n)" +
                 "\nAdd File ---------(f)" +
@@ -406,7 +439,7 @@ public class Demo
                 "\nRemove Directory -(r)" +
                 "\nPrint File Count -(c)" +
                 "\nPrint File System (p)" +
-                "\nUse Test Space ---(t)" +
+                //"\nUse Test Space ---(t)" + commented out, no longer in use
                 "\nQuit -------------(q)");
             valid = false;
             while (valid == false)
@@ -426,6 +459,7 @@ public class Demo
             {
                 case 'n': //case reset filesystem
                     filetree = new FileSystem();
+                    Console.WriteLine("File System reset");
                     break;
 
                 case 'f': //case add file
@@ -519,7 +553,7 @@ public class Demo
                     Console.WriteLine("\nHit enter to return");
                     Console.ReadLine(); //keep printed filesystem open
                     break;
-
+                /* commented out because it doesn't handle exceptions
                 case 't': //case original testing space
                           //testing space
 
@@ -556,6 +590,7 @@ public class Demo
 
                     //end of testing space
                     break;
+                    */
 
                 case 'q': //case quit
                     run = false;
