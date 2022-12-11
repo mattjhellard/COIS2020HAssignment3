@@ -360,7 +360,7 @@ public class FileSystem
             }
         }
         //final index reached at this point, i now refers to desired deletion name and first instance (should also be only) will be deleted
-        while (p.rightSibling != null) //no scenario where first p hasn't already been checked, either caught and dealt with at very beginning or before jumping to it 
+        while (p != null && p.rightSibling != null) //p cannot be the node to be deleted at this point, but it can still be null
         {
             if (p.rightSibling.directory == nav[i]) //if desired delete found
             {
