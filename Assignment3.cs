@@ -553,44 +553,7 @@ public class Demo
                     Console.WriteLine("\nHit enter to return");
                     Console.ReadLine(); //keep printed filesystem open
                     break;
-                /* commented out because it doesn't handle exceptions
-                case 't': //case original testing space
-                          //testing space
-
-                    //Test fileSystem constructor
-                    FileSystem testFileSystem = new FileSystem();
-                    //testFileSystem.PrintFileSystem();
-
-                    //Test filenames
-                    string[] testStrings = { " ", "/", "/.txt", "A", "/A", "/A/FileA", "/A/FileA.txt", "/File>A.txt", "/File/A.,>.txt", "/FileA.txt", "/FileA.txt", "/FileB.txt" };
-                    //string[] testStrings = { "/FileA.txt", "/FileA.txt", "/FileB.txt" };
-                    foreach (string item in testStrings)
-                    {
-                        Console.WriteLine("File to add: " + item);
-                        testFileSystem.AddFile(item);
-                        testFileSystem.PrintFileSystem();
-                        Console.WriteLine(" ");
-                    }
-
-                    //Test remove file
-                    string[] testRemoveStrings = { "/FileA.txt", "/FileA.txt", "/", "/fileasdb.txt" };
-                    foreach (string item in testRemoveStrings)
-                    {
-                        Console.WriteLine("File to remove: " + item);
-                        testFileSystem.RemoveFile(item);
-                        testFileSystem.PrintFileSystem();
-                        Console.WriteLine(" ");
-                    }
-
-                    //test NumberFiles method
-                    Console.WriteLine("\nCount:" + testFileSystem.NumberFiles());
-
-                    Console.WriteLine("Hit enter to return");
-                    Console.ReadLine(); //keeps testing space open
-
-                    //end of testing space
-                    break;
-                    */
+                
 
                 case 'q': //case quit
                     run = false;
